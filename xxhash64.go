@@ -9,6 +9,7 @@ import (
 var (
 	xxhash64 *XXHash64
 	_        hash.Hash64 = xxhash64
+	_        hash.Hash   = xxhash64
 )
 
 // Constants
@@ -81,28 +82,28 @@ func (x *XXHash64) Sum64() uint64 {
 	if x.len >= 32 {
 		v1, v2, v3, v4 := x.v1, x.v2, x.v3, x.v4
 
-		h = rotl64(v1, 1) + rotl64(v2, 7) + rotl64(v3, 12) + rotl64(v4, 18)
+		h = rotl64_1(v1) + rotl64_7(v2) + rotl64_12(v3) + rotl64_18(v4)
 
 		v1 *= prime64_2
-		v1 = rotl64(v1, 31)
+		v1 = rotl64_31(v1)
 		v1 *= prime64_1
 		h ^= v1
 		h = h*prime64_1 + prime64_4
 
 		v2 *= prime64_2
-		v2 = rotl64(v2, 31)
+		v2 = rotl64_31(v2)
 		v2 *= prime64_1
 		h ^= v2
 		h = h*prime64_1 + prime64_4
 
 		v3 *= prime64_2
-		v3 = rotl64(v3, 31)
+		v3 = rotl64_31(v3)
 		v3 *= prime64_1
 		h ^= v3
 		h = h*prime64_1 + prime64_4
 
 		v4 *= prime64_2
-		v4 = rotl64(v4, 31)
+		v4 = rotl64_31(v4)
 		v4 *= prime64_1
 		h ^= v4
 		h = h*prime64_1 + prime64_4
@@ -115,18 +116,18 @@ func (x *XXHash64) Sum64() uint64 {
 	if x.memsize > 0 {
 		in := x.mem[:x.memsize]
 		for len(in) >= 8 {
-			h ^= rotl64(bToU64(in[:8])*prime64_2, 31) * prime64_1
-			h = rotl64(h, 27)*prime64_1 + prime64_4
-			in = in[8:]
+			h ^= rotl64_31(bToU64(in[:8])*prime64_2) * prime64_1
+			h = rotl64_27(h)*prime64_1 + prime64_4
+			in = in[8:len(in):len(in)]
 		}
 		if len(in) >= 4 {
 			h ^= uint64(bToU32(in[:4])) * prime64_1
-			h = rotl64(h, 23)*prime64_2 + prime64_3
-			in = in[4:]
+			h = rotl64_23(h)*prime64_2 + prime64_3
+			in = in[4:len(in):len(in)]
 		}
 		for i := 0; i < len(in); i++ {
 			h ^= uint64(uint8(in[i])) * prime64_5
-			h = rotl64(h, 11) * prime64_1
+			h = rotl64_11(h) * prime64_1
 		}
 	}
 
@@ -157,37 +158,37 @@ func (x *XXHash64) Write(input []byte) (int, error) {
 		n := 32 - x.memsize
 		copy(x.mem[x.memsize:], input[:n:len(input)])
 
-		x.v1 += bToU64(x.mem[:8]) * prime64_2
-		x.v1 = rotl64(x.v1, 31) * prime64_1
+		x.v1 += bToU64(x.mem[:8:8]) * prime64_2
+		x.v1 = rotl64_31(x.v1) * prime64_1
 
-		x.v2 += bToU64(x.mem[8:16]) * prime64_2
-		x.v2 = rotl64(x.v2, 31) * prime64_1
+		x.v2 += bToU64(x.mem[8:16:16]) * prime64_2
+		x.v2 = rotl64_31(x.v2) * prime64_1
 
-		x.v3 += bToU64(x.mem[16:24]) * prime64_2
-		x.v3 = rotl64(x.v3, 31) * prime64_1
+		x.v3 += bToU64(x.mem[16:24:24]) * prime64_2
+		x.v3 = rotl64_31(x.v3) * prime64_1
 
-		x.v4 += bToU64(x.mem[24:32]) * prime64_2
-		x.v4 = rotl64(x.v4, 31) * prime64_1
+		x.v4 += bToU64(x.mem[24:32:32]) * prime64_2
+		x.v4 = rotl64_31(x.v4) * prime64_1
 
-		input = input[n:len(input)]
+		input = input[n:len(input):len(input)]
 		x.memsize = 0
 	}
 
 	if len(input) >= 32 {
 		for len(input) >= 32 {
-			x.v1 += bToU64(input[:8]) * prime64_2
-			x.v1 = rotl64(x.v1, 31) * prime64_1
+			x.v1 += bToU64(input[:8:8]) * prime64_2
+			x.v1 = rotl64_31(x.v1) * prime64_1
 
-			x.v2 += bToU64(input[8:16]) * prime64_2
-			x.v2 = rotl64(x.v2, 31) * prime64_1
+			x.v2 += bToU64(input[8:16:16]) * prime64_2
+			x.v2 = rotl64_31(x.v2) * prime64_1
 
-			x.v3 += bToU64(input[16:24]) * prime64_2
-			x.v3 = rotl64(x.v3, 31) * prime64_1
+			x.v3 += bToU64(input[16:24:24]) * prime64_2
+			x.v3 = rotl64_31(x.v3) * prime64_1
 
-			x.v4 += bToU64(input[24:32]) * prime64_2
-			x.v4 = rotl64(x.v4, 31) * prime64_1
+			x.v4 += bToU64(input[24:32:32]) * prime64_2
+			x.v4 = rotl64_31(x.v4) * prime64_1
 
-			input = input[32:]
+			input = input[32:len(input):len(input)]
 		}
 	}
 
