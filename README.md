@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/shivakar/xxhash.svg?branch=master)](https://travis-ci.org/shivakar/xxhash)[![Coverage Status](https://coveralls.io/repos/github/shivakar/xxhash/badge.svg?branch=master)](https://coveralls.io/github/shivakar/xxhash?branch=master)[![GoDoc](https://godoc.org/github.com/shivakar/xxhash?status.svg)](https://godoc.org/github.com/shivakar/xxhash)
+[![Build Status](https://travis-ci.org/shivakar/xxhash.svg?branch=master)](https://travis-ci.org/shivakar/xxhash) [![Coverage Status](https://coveralls.io/repos/github/shivakar/xxhash/badge.svg?branch=master)](https://coveralls.io/github/shivakar/xxhash?branch=master) [![GoDoc](https://godoc.org/github.com/shivakar/xxhash?status.svg)](https://godoc.org/github.com/shivakar/xxhash)
 # xxhash
 A pure Go port of xxHash algorithm
 
