@@ -1,3 +1,4 @@
+[![GoDoc](https://godoc.org/github.com/shivakar/xxhash?status.svg)](https://godoc.org/github.com/shivakar/xxhash)
 # xxhash
 A pure Go port of xxHash algorithm
 

@@ -139,7 +139,7 @@ func Test_WriteEdgeCases(t *testing.T) {
 }
 
 // Examples
-func ExampleXXHash64_Usage() {
+func ExampleXXHash64_usage() {
 	// Create a new instance of the hash engine with default seed
 	h := xxhash.NewXXHash64()
 
