@@ -1,6 +1,12 @@
 package xxhash_test
 
 import (
+	"crypto/md5"
+	"crypto/rand"
+	"crypto/sha1"
+	"fmt"
+	"hash/crc64"
+	"hash/fnv"
 	"testing"
 
 	"github.com/shivakar/xxhash"
@@ -130,4 +136,134 @@ func Test_WriteEdgeCases(t *testing.T) {
 	r2.Write([]byte("123456abcdefghijklmnopqrstuvwxyz"))
 
 	assert.Equal(r1.String(), r2.String())
+}
+
+// Examples
+func ExampleXXHash64_Usage() {
+	// Create a new instance of the hash engine with default seed
+	h := xxhash.NewXXHash64()
+
+	// Create a new instance of the hash engine with custom seed
+	_ = xxhash.NewSeedXXHash64(uint64(10))
+
+	// Write some data to the hash
+	h.Write([]byte("Hello, World!!"))
+
+	// Write some more data to the hash
+	h.Write([]byte("How are you doing?"))
+
+	// Get the current hash as a byte array
+	b := h.Sum(nil)
+	fmt.Println(b)
+
+	// Get the current hash as an integer (uint64) (little-endian)
+	fmt.Println(h.Uint64())
+
+	// Get the current hash as a hexadecimal string (big-endian)
+	fmt.Println(h.String())
+
+	// Reset the hash
+	h.Reset()
+
+	// Output:
+	// [70 182 137 152 187 180 209 136]
+	// 5095411317493518728
+	// 46b68998bbb4d188
+
+}
+
+// Benchmarks
+
+func Benchmark_XXHash64_1kb(b *testing.B) {
+	var out []byte
+	in := make([]byte, 1024)
+	rand.Read(in)
+	h := xxhash.NewXXHash64()
+	for i := 0; i < b.N; i++ {
+		h.Write(in)
+		out = h.Sum(nil)
+		h.Reset()
+	}
+	_ = out
+}
+
+func Benchmark_XXHash64_1mb(b *testing.B) {
+	var out []byte
+	in := make([]byte, 1024*1024)
+	rand.Read(in)
+	h := xxhash.NewXXHash64()
+	for i := 0; i < b.N; i++ {
+		h.Write(in)
+		out = h.Sum(nil)
+		h.Reset()
+	}
+	_ = out
+}
+
+const inStr = "Hello World!! How are you doing?"
+
+func Benchmark_XXHash64(b *testing.B) {
+	var out []byte
+	h := xxhash.NewXXHash64()
+	for i := 0; i < b.N; i++ {
+		h.Write([]byte(inStr))
+		out = h.Sum(nil)
+		h.Reset()
+	}
+	_ = out
+}
+
+func Benchmark_FNV64a(b *testing.B) {
+	var out []byte
+	h := fnv.New64a()
+	for i := 0; i < b.N; i++ {
+		h.Write([]byte(inStr))
+		out = h.Sum(nil)
+		h.Reset()
+	}
+	_ = out
+}
+
+func Benchmark_FNV64(b *testing.B) {
+	var out []byte
+	h := fnv.New64()
+	for i := 0; i < b.N; i++ {
+		h.Write([]byte(inStr))
+		out = h.Sum(nil)
+		h.Reset()
+	}
+	_ = out
+}
+
+func Benchmark_CRC64ISO(b *testing.B) {
+	var out []byte
+	h := crc64.New(crc64.MakeTable(crc64.ISO))
+	for i := 0; i < b.N; i++ {
+		h.Write([]byte(inStr))
+		out = h.Sum(nil)
+		h.Reset()
+	}
+	_ = out
+}
+
+func Benchmark_SHA1(b *testing.B) {
+	var out []byte
+	h := sha1.New()
+	for i := 0; i < b.N; i++ {
+		h.Write([]byte(inStr))
+		out = h.Sum(nil)
+		h.Reset()
+	}
+	_ = out
+}
+
+func Benchmark_MD5(b *testing.B) {
+	var out []byte
+	h := md5.New()
+	for i := 0; i < b.N; i++ {
+		h.Write([]byte(inStr))
+		out = h.Sum(nil)
+		h.Reset()
+	}
+	_ = out
 }
