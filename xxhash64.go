@@ -114,14 +114,14 @@ func (x *XXHash64) Sum64() uint64 {
 	h += x.len
 
 	if x.memsize > 0 {
-		in := x.mem[:x.memsize]
+		in := x.mem[:x.memsize:x.memsize]
 		for len(in) >= 8 {
-			h ^= rotl64_31(bToU64(in[:8])*prime64_2) * prime64_1
+			h ^= rotl64_31(bToU64(in[:8:8])*prime64_2) * prime64_1
 			h = rotl64_27(h)*prime64_1 + prime64_4
 			in = in[8:len(in):len(in)]
 		}
 		if len(in) >= 4 {
-			h ^= uint64(bToU32(in[:4])) * prime64_1
+			h ^= uint64(bToU32(in[:4:4])) * prime64_1
 			h = rotl64_23(h)*prime64_2 + prime64_3
 			in = in[4:len(in):len(in)]
 		}
